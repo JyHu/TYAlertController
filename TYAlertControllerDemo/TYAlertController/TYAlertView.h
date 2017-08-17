@@ -50,6 +50,7 @@ typedef NS_ENUM(NSUInteger, TYAlertActionStyle) {
 @property (nonatomic, assign) CGFloat buttonContentViewTop;
 @property (nonatomic, assign) CGFloat buttonCornerRadius;
 @property (nonatomic, strong) UIFont *buttonFont;
+@property (nonatomic, strong) UIColor *buttonTitleColor;
 @property (nonatomic, strong) UIColor *buttonDefaultBgColor;
 @property (nonatomic, strong) UIColor *buttonCancelBgColor;
 @property (nonatomic, strong) UIColor *buttonDestructiveBgColor;
@@ -69,6 +70,7 @@ typedef NS_ENUM(NSUInteger, TYAlertActionStyle) {
 + (instancetype)alertViewWithTitle:(NSString *)title message:(NSString *)message;
 
 - (void)addAction:(TYAlertAction *)action;
+- (void)addAction:(TYAlertAction *)action withButton:(UIButton *)button;
 
 - (void)addTextFieldWithConfigurationHandler:(void (^)(UITextField *textField))configurationHandler;
 

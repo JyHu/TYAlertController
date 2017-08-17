@@ -137,6 +137,7 @@
     _buttonDefaultBgColor = [UIColor colorWithRed:52/255.0 green:152/255.0 blue:219/255.0 alpha:1];
     _buttonCancelBgColor = [UIColor colorWithRed:127/255.0 green:140/255.0 blue:141/255.0 alpha:1];
     _buttonDestructiveBgColor = [UIColor colorWithRed:231/255.0 green:76/255.0 blue:60/255.0 alpha:1];
+    _buttonTitleColor = [UIColor whiteColor];
     
     _textFieldHeight = kTextFieldHeight;
     _textFieldEdge = kTextFieldEdge;
@@ -213,12 +214,23 @@
 - (void)addAction:(TYAlertAction *)action
 {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.clipsToBounds = YES;
     button.layer.cornerRadius = _buttonCornerRadius;
+    [button setTitleColor:_buttonTitleColor forState:UIControlStateNormal];
     [button setTitle:action.title forState:UIControlStateNormal];
     button.titleLabel.font = _buttonFont;
     button.backgroundColor = [self buttonBgColorWithStyle:action.style];
     button.enabled = action.enabled;
+    [button addTarget:self action:@selector(actionButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self addAction:action withButton:button];
+}
+
+- (void)addAction:(TYAlertAction *)action withButton:(UIButton *)button
+{
+    if (!button) {
+        button = [UIButton buttonWithType:UIButtonTypeCustom];
+    }
+    button.clipsToBounds = YES;
     button.tag = kButtonTagOffset + _buttons.count;
     button.translatesAutoresizingMaskIntoConstraints = NO;
     [button addTarget:self action:@selector(actionButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
