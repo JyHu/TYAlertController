@@ -31,4 +31,7 @@
 
 - (void)hide;
 
++ (void)setDefaultDuration:(NSTimeInterval)duration;
++ (void)setDefaultInitializeScale:(CGFloat)scale;
+
 @end

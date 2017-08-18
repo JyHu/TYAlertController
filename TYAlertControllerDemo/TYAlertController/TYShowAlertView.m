@@ -12,12 +12,44 @@
 @interface TYShowAlertView ()
 @property (nonatomic, weak) UIView *alertView;
 @property (nonatomic, weak) UITapGestureRecognizer *singleTap;
+
+
+@property (assign, nonatomic) NSTimeInterval defaultDuration;
+@property (assign, nonatomic) CGFloat defaultScale;
+
+
 @end
 
 //current window
 #define kCurrentWindow [[UIApplication sharedApplication].windows firstObject]
 
 @implementation TYShowAlertView
+
++ (void)load
+{
+    [[self sharedStorage] setDefaultDuration:0.35];
+    [[self sharedStorage] setDefaultScale:0.5];
+}
+
++ (instancetype)sharedStorage
+{
+    static TYShowAlertView *storage;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        storage = [[TYShowAlertView alloc] init];
+    });
+    return storage;
+}
+
++ (void)setDefaultDuration:(NSTimeInterval)duration
+{
+    [[self sharedStorage] setDefaultDuration:duration];
+}
+
++ (void)setDefaultInitializeScale:(CGFloat)scale
+{
+    [[self sharedStorage] setDefaultScale:scale];
+}
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
@@ -26,6 +58,8 @@
         
         _backgoundTapDismissEnable = NO;
         _alertViewEdging = 15;
+        _defaultScale = [TYShowAlertView sharedStorage].defaultScale;
+        _defaultDuration = [TYShowAlertView sharedStorage].defaultDuration;
         
         [self addBackgroundView];
         
@@ -168,9 +202,15 @@
         [kCurrentWindow addSubview:self];
     }
     self.alpha = 0;
-    _alertView.transform = CGAffineTransformScale(_alertView.transform,0.1,0.1);
-    [UIView animateWithDuration:0.3 animations:^{
-        _alertView.transform = CGAffineTransformIdentity;
+    
+    if (self.defaultScale != 1) {
+        _alertView.transform = CGAffineTransformScale(_alertView.transform,self.defaultScale,self.defaultScale);
+    }
+    
+    [UIView animateWithDuration:self.defaultDuration animations:^{
+        if (self.defaultScale != 1) {
+            _alertView.transform = CGAffineTransformIdentity;
+        }
         self.alpha = 1;
     }];
     
@@ -179,8 +219,10 @@
 - (void)hide
 {
     if (self.superview) {
-        [UIView animateWithDuration:0.3 animations:^{
-            _alertView.transform = CGAffineTransformScale(_alertView.transform,0.1,0.1);
+        [UIView animateWithDuration:self.defaultDuration animations:^{
+            if (self.defaultScale != 1) {
+                _alertView.transform = CGAffineTransformScale(_alertView.transform,self.defaultScale,self.defaultScale);
+            }
             self.alpha = 0;
         } completion:^(BOOL finished) {
             [self removeFromSuperview];
