@@ -8,15 +8,41 @@
 
 #import "TYShowAlertView.h"
 #import "UIView+TYAutoLayout.h"
+#import <objc/runtime.h>
+
+
+@implementation UIView (TYShowingProperty)
+
+- (void)setTyDuration:(NSTimeInterval)tyDuration
+{
+    objc_setAssociatedObject(self, @selector(tyDuration), @(tyDuration), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (NSTimeInterval)tyDuration
+{
+    id duration = objc_getAssociatedObject(self, @selector(tyDuration));
+    return duration ? [duration doubleValue] : 0.25;
+}
+
+- (void)setTyInitializeScale:(CGFloat)tyInitializeScale
+{
+    objc_setAssociatedObject(self, @selector(tyInitializeScale), @(tyInitializeScale), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (CGFloat)tyInitializeScale
+{
+    id scale = objc_getAssociatedObject(self, @selector(tyInitializeScale));
+    return scale ? [scale doubleValue] : 0.2;
+}
+
+@end
+
+
+
 
 @interface TYShowAlertView ()
 @property (nonatomic, weak) UIView *alertView;
 @property (nonatomic, weak) UITapGestureRecognizer *singleTap;
-
-
-@property (assign, nonatomic) NSTimeInterval defaultDuration;
-@property (assign, nonatomic) CGFloat defaultScale;
-
 
 @end
 
@@ -25,32 +51,6 @@
 
 @implementation TYShowAlertView
 
-+ (void)load
-{
-    [[self sharedStorage] setDefaultDuration:0.35];
-    [[self sharedStorage] setDefaultScale:0.5];
-}
-
-+ (instancetype)sharedStorage
-{
-    static TYShowAlertView *storage;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        storage = [[TYShowAlertView alloc] init];
-    });
-    return storage;
-}
-
-+ (void)setDefaultDuration:(NSTimeInterval)duration
-{
-    [[self sharedStorage] setDefaultDuration:duration];
-}
-
-+ (void)setDefaultInitializeScale:(CGFloat)scale
-{
-    [[self sharedStorage] setDefaultScale:scale];
-}
-
 - (instancetype)initWithFrame:(CGRect)frame
 {
     if (self = [super initWithFrame:frame]) {
@@ -58,8 +58,6 @@
         
         _backgoundTapDismissEnable = NO;
         _alertViewEdging = 15;
-        _defaultScale = [TYShowAlertView sharedStorage].defaultScale;
-        _defaultDuration = [TYShowAlertView sharedStorage].defaultDuration;
         
         [self addBackgroundView];
         
@@ -203,12 +201,12 @@
     }
     self.alpha = 0;
     
-    if (self.defaultScale != 1) {
-        _alertView.transform = CGAffineTransformScale(_alertView.transform,self.defaultScale,self.defaultScale);
+    if (_alertView.tyInitializeScale != 1) {
+        _alertView.transform = CGAffineTransformScale(_alertView.transform,_alertView.tyInitializeScale,_alertView.tyInitializeScale);
     }
     
-    [UIView animateWithDuration:self.defaultDuration animations:^{
-        if (self.defaultScale != 1) {
+    [UIView animateWithDuration:_alertView.tyDuration animations:^{
+        if (_alertView.tyInitializeScale != 1) {
             _alertView.transform = CGAffineTransformIdentity;
         }
         self.alpha = 1;
@@ -219,9 +217,9 @@
 - (void)hide
 {
     if (self.superview) {
-        [UIView animateWithDuration:self.defaultDuration animations:^{
-            if (self.defaultScale != 1) {
-                _alertView.transform = CGAffineTransformScale(_alertView.transform,self.defaultScale,self.defaultScale);
+        [UIView animateWithDuration:_alertView.tyDuration animations:^{
+            if (_alertView.tyInitializeScale != 1) {
+                _alertView.transform = CGAffineTransformScale(_alertView.transform,_alertView.tyInitializeScale,_alertView.tyInitializeScale);
             }
             self.alpha = 0;
         } completion:^(BOOL finished) {

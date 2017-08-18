@@ -8,6 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+@interface UIView (TYShowingProperty)
+
+@property (nonatomic, assign) NSTimeInterval tyDuration;
+@property (nonatomic, assign) CGFloat tyInitializeScale;
+
+@end
+
 @interface TYShowAlertView : UIView
 
 @property (nonatomic, weak, readonly) UIView *alertView;
@@ -16,6 +23,7 @@
 @property (nonatomic, assign) BOOL backgoundTapDismissEnable;  // default NO
 @property (nonatomic, assign) CGFloat alertViewOriginY;  // default center Y
 @property (nonatomic, assign) CGFloat alertViewEdging;   // default 15
+
 
 +(void)showAlertViewWithView:(UIView *)alertView;
 
@@ -30,8 +38,5 @@
 - (void)show;
 
 - (void)hide;
-
-+ (void)setDefaultDuration:(NSTimeInterval)duration;
-+ (void)setDefaultInitializeScale:(CGFloat)scale;
 
 @end
