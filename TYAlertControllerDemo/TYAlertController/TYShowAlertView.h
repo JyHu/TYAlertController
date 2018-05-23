@@ -38,5 +38,6 @@
 - (void)show;
 
 - (void)hide;
+- (void)hideAnimated:(BOOL)animated;
 
 @end

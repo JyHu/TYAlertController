@@ -60,10 +60,13 @@
     [TYShowAlertView showAlertViewWithView:self originY:OriginY backgoundTapDismissEnable:backgoundTapDismissEnable];
 }
 
-- (void)hideInWindow
-{
+- (void)hideInWindow {
+    [self hideInWindowAnimated:NO];
+}
+
+- (void)hideInWindowAnimated:(BOOL)animated {
     if ([self isShowInWindow]) {
-        [(TYShowAlertView *)self.superview hide];
+        [(TYShowAlertView *)self.superview hideAnimated:animated];
     }else {
         NSLog(@"self.superview is nil, or isn't TYShowAlertView");
     }
@@ -102,10 +105,13 @@
     [viewController presentViewController:alertController animated:YES completion:nil];
 }
 
-- (void)hideInController
-{
+- (void)hideInController {
+    [self hideInControllerAnimated:NO];
+}
+
+- (void)hideInControllerAnimated:(BOOL)animated {
     if ([self isShowInAlertController]) {
-        [(TYAlertController *)self.viewController dismissViewControllerAnimated:YES];
+        [(TYAlertController *)self.viewController dismissViewControllerAnimated:animated];
     }else {
         NSLog(@"self.viewController is nil, or isn't TYAlertController");
     }
@@ -131,15 +137,19 @@
     return NO;
 }
 
-- (void)hideView
-{
+- (void)hideViewAnimated:(BOOL)animated {
     if ([self isShowInAlertController]) {
-        [self hideInController];
+        [self hideInControllerAnimated:animated];
     }else if ([self isShowInWindow]) {
-        [self hideInWindow];
+        [self hideInWindowAnimated:animated];
     }else {
         NSLog(@"self.viewController is nil, or isn't TYAlertController,or self.superview is nil, or isn't TYShowAlertView");
     }
+}
+
+- (void)hideView
+{
+    [self hideViewAnimated:NO];
 }
 
 @end

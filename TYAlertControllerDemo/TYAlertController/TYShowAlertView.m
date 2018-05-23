@@ -214,10 +214,14 @@
     
 }
 
-- (void)hide
+- (void)hide {
+    [self hideAnimated:YES];
+}
+
+- (void)hideAnimated:(BOOL)animated
 {
     if (self.superview) {
-        [UIView animateWithDuration:_alertView.tyDuration animations:^{
+        [UIView animateWithDuration:(animated ? _alertView.tyDuration : 0) animations:^{
             if (_alertView.tyInitializeScale != 1) {
                 _alertView.transform = CGAffineTransformScale(_alertView.transform,_alertView.tyInitializeScale,_alertView.tyInitializeScale);
             }

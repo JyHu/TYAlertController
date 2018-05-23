@@ -47,9 +47,12 @@
 
 // this will judge and call right method
 - (void)hideView;
+- (void)hideViewAnimated:(BOOL)animated;
 
 - (void)hideInController;
+- (void)hideInControllerAnimated:(BOOL)animated;
 
 - (void)hideInWindow;
+- (void)hideInWindowAnimated:(BOOL)animated;
 
 @end
