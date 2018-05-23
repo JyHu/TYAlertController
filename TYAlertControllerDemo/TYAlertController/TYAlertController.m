@@ -305,7 +305,7 @@
 
 - (void)dismissViewControllerAnimated:(BOOL)animated
 {
-    [self dismissViewControllerAnimated:YES completion:self.dismissComplete];
+    [self dismissViewControllerAnimated:animated completion:self.dismissComplete];
 }
 
 #pragma mark - action
